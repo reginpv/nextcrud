@@ -18,9 +18,17 @@ model User {
   name                        String
   email                       String               @unique
   image                       String?
+  role                        Role                 @default(USER)
+  activatedAt                 DateTime?
   createdAt                   DateTime             @default(now())
   loggedInAt                  DateTime?            @default(now())
   deletedAt                   DateTime?
   password                    String?
   updatedAt                   DateTime?            @updatedAt
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  USER
 }

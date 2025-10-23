@@ -1,21 +1,20 @@
-"use client"
+'use client'
 
-import { useState, useRef } from "react"
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useState, useRef } from 'react'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function FormLogin() {
-  
   const router = useRouter()
-  const { push:redirect } = router
+  const { push: redirect } = router
   const formRef = useRef<HTMLFormElement>(null)
   const [state, setState] = useState({
-    message: "",
+    message: '',
     success: false,
     errors: {
-      email: "",
-      password: ""
-    }
+      email: '',
+      password: '',
+    },
   })
   const [pending, setPending] = useState(false)
 
@@ -25,85 +24,84 @@ export default function FormLogin() {
     setPending(true)
 
     const formData = new FormData(formRef.current)
-    const email = formData.get("email")?.toString().trim()
-    const password = formData.get("password")?.toString().trim()
+    const email = formData.get('email')?.toString().trim()
+    const password = formData.get('password')?.toString().trim()
 
     if (!email || !password) {
       setState({
         message: null,
         success: false,
         errors: {
-          email: !email ? "Email is required." : "",
-          password: !password ? "Password is required." : ""
-        }
+          email: !email ? 'Email is required.' : '',
+          password: !password ? 'Password is required.' : '',
+        },
       })
       setPending(false)
       return
     }
 
     try {
-
-      const res = await signIn("credentials", {
+      const res = await signIn('credentials', {
         email,
         password,
         redirect: false,
-        
       })
 
-      console.log("res: ", res)
+      console.log('res: ', res)
 
-      if (res?.ok === true ) {
-
+      if (res?.ok === true) {
         setState({
-          message: "Logged in successfully",
+          message: 'Logged in successfully',
           success: true,
           errors: {
-            email: "",
-            password: ""
-          }
+            email: '',
+            password: '',
+          },
         })
 
-        redirect("/")
-
+        redirect('/')
       } else {
-
         setState({
-          message: "Failed to login",
+          message: 'Failed to login',
           success: false,
           errors: {
-            email: "",
-            password: ""
-          }
+            email: '',
+            password: '',
+          },
         })
-
       }
 
       setPending(false)
-
     } catch (error) {
-      
+      console.log('error: ', error)
+
       setState({
-        message: "Failed to login",
+        message: 'Failed to login',
         success: false,
         errors: {
-          email: "",
-          password: ""
-        }
+          email: '',
+          password: '',
+        },
       })
-      
     }
-
-
   }
 
   return (
-    <form 
+    <form
       ref={formRef}
-      onSubmit={handleSubmit} 
-      noValidate 
+      onSubmit={handleSubmit}
+      noValidate
       className="flex flex-col gap-5"
     >
-      {state?.message && <p className={`message ${state.success ? `message--success` : `message--error`}`}>{state?.message}</p>}
+      {state?.message && (
+        <p
+          className={`message ${
+            state.success ? `message--success` : `message--error`
+          }`}
+        >
+          {state?.message}
+        </p>
+      )}
 
       <div className="form-control">
         <label>Email address</label>
@@ -114,7 +112,9 @@ export default function FormLogin() {
           placeholder="johnthomas@email.com"
           className={`input w-full`}
         />
-        {state?.errors?.email && <p className="error">{state?.errors?.email}</p>}
+        {state?.errors?.email && (
+          <p className="error">{state?.errors?.email}</p>
+        )}
       </div>
 
       <div className="form-control">
@@ -126,19 +126,16 @@ export default function FormLogin() {
           placeholder="********"
           className={`input w-full`}
         />
-        {state?.errors?.password && <p className="error">{state?.errors?.password}</p>}
+        {state?.errors?.password && (
+          <p className="error">{state?.errors?.password}</p>
+        )}
       </div>
 
       <div>
-        <button
-          type="submit"
-          className="w-full"
-          disabled={pending}
-        >
-          {pending ? "Please wait..." : "Login"}
+        <button type="submit" className="w-full" disabled={pending}>
+          {pending ? 'Please wait...' : 'Login'}
         </button>
       </div>
-      
     </form>
   )
 }
