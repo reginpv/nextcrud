@@ -19,7 +19,7 @@ export default async function DashboardUserProfilePage() {
       {/** Content */}
       <div className="main__content py-3 px-5">
         <div className="container container--narrow md:my-5">
-          <FormProfile m={me} />
+          <FormProfile m={me} className="w-full max-w-80" />
         </div>
       </div>
     </section>

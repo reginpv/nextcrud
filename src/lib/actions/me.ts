@@ -78,6 +78,24 @@ export async function updateMe(prevState: User, formData: User) {
   const updatedAt = new Date()
 
   try {
+    // Check if email already exists
+    const userExist = await prisma[table].findFirst({
+      where: {
+        email: email,
+      },
+    })
+
+    // If email already exists, return error
+    if (userExist) {
+      if (userExist.id !== +id) {
+        return {
+          success: false,
+          payload: null,
+          message: `Email ${email} already exists. Please use a different email.`,
+        }
+      }
+    }
+
     const updatedUser = await prisma[table].update({
       where: {
         id: +id,
@@ -102,7 +120,7 @@ export async function updateMe(prevState: User, formData: User) {
     return {
       success: false,
       payload: null,
-      message: 'Failed to update profile',
+      message: 'Failed to update profile. Please call admin.',
     }
   }
 }

@@ -4,7 +4,7 @@ import { useActionState, useEffect, useRef } from 'react'
 import { createUser } from '@/lib/actions/user'
 import { useRouter } from 'next/navigation'
 
-export default function FormSignup() {
+export default function FormSignup({ className }: { className?: string }) {
   // Hooks
   const { push: redirect } = useRouter()
 
@@ -29,18 +29,8 @@ export default function FormSignup() {
       ref={formRef}
       action={handleSubmit}
       noValidate
-      className="flex flex-col gap-5"
+      className={`flex flex-col gap-5 ${className}`}
     >
-      {state?.message && (
-        <p
-          className={`message ${
-            state.success ? `message--success` : `message--error`
-          }`}
-        >
-          {state?.message}
-        </p>
-      )}
-
       <div className="form-control">
         <label>Full name</label>
         <input
@@ -80,7 +70,16 @@ export default function FormSignup() {
         )}
       </div>
       <div>
-        <button type="submit" className="w-full" disabled={pending}>
+        {state?.message && (
+          <div
+            className={`alert ${
+              state.success ? `alert--success` : `alert--danger`
+            }`}
+          >
+            {state?.message}
+          </div>
+        )}
+        <button type="submit" className="w-full my-3" disabled={pending}>
           {pending ? 'Please wait...' : 'Signup'}
         </button>
       </div>

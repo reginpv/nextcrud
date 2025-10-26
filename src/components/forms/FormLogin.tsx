@@ -4,7 +4,7 @@ import { useState, useRef } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
-export default function FormLogin() {
+export default function FormLogin({ className }: { className?: string }) {
   // Refs
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -101,7 +101,7 @@ export default function FormLogin() {
       ref={formRef}
       onSubmit={handleSubmit}
       noValidate
-      className="flex flex-col gap-5"
+      className={`${className} flex flex-col gap-5`}
     >
       {state?.message && (
         <p

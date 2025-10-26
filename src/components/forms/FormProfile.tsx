@@ -5,7 +5,13 @@ import { updateMe } from '@/lib/actions/me'
 import { useSession } from 'next-auth/react'
 import { UserRoundPen } from 'lucide-react'
 
-export default function FormProfile({ m }: { m: User }) {
+export default function FormProfile({
+  m,
+  className,
+}: {
+  m: User
+  className?: string
+}) {
   //
   const { data: session, update } = useSession()
 
@@ -35,24 +41,26 @@ export default function FormProfile({ m }: { m: User }) {
 
   //
   async function sessionUpdate(updatedUser: User) {
+    // NOTE: Important!
     // Merge updated user data with existing session user data
-    // Just pass the user fields that have changed
+    // *** Just pass the user fields that have changed ***
     const newUser = {
       ...session?.user,
       ...updatedUser,
     }
-    console.log('Updating session with new user data:', newUser)
 
-    // Update client side state in memory
-    // Update() does not modify the JWT token
+    //
+    console.log('Updating session with new user data:', newUser)
     await update(newUser)
+
+    //
   }
 
   return (
     <form
       ref={formRef}
       action={handleSubmit}
-      className="bg-white p-5 md:p-10 w-auto max-w-[680px] mx-auto flex justify-center dark:bg-gray-800"
+      className={`bg-white p-5 md:p-10 mx-auto flex justify-center dark:bg-gray-800 ${className}`}
       noValidate
       data-loading={pending || isPending}
     >
@@ -119,7 +127,7 @@ export default function FormProfile({ m }: { m: User }) {
           {state?.message && (
             <div
               className={`alert ${
-                state.success ? 'alert--success' : 'alert--fail'
+                state.success ? 'alert--success' : 'alert--danger'
               }`}
             >
               {state.message}

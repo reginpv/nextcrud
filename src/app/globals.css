@@ -54,7 +54,7 @@ form {
   input,
   select,
   textarea {
-    @apply p-2 w-auto ring-0 outline-none border border-gray-300;
+    @apply p-2 ring-0 outline-none border border-gray-300;
   }
   select,
   input[type='date'] {
