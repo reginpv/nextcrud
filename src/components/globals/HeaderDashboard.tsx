@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { APP_NAME } from '@/config/constants'
-import DrawerProfile from './DrawerProfile'
-import ButtonDrawer from '../ui/ButtonDrawer'
+import DrawerProfile from '@/components/globals/DrawerProfile'
+import ButtonDrawer from '@/components/ui/ButtonDrawer'
 
 export default async function HeaderDashboard() {
   return (
