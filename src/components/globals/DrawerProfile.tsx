@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ButtonSignOut } from '@/components/ButtonsAuth'
 import Mode from '@/components/Mode'
-import { User, UserPen, CircleUserRound } from 'lucide-react'
+import { User, UserPen, CircleUserRound, ShieldEllipsis } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
 export default function DrawerProfile() {
@@ -77,6 +77,16 @@ export default function DrawerProfile() {
               <UserPen className="inline mr-2 mb-1" />
               Profile
             </Link>
+
+            <Link
+              href="/dashboard/user/security"
+              className="hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded animated"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <ShieldEllipsis className="inline mr-2 mb-1" />
+              Security
+            </Link>
+
             <Mode setIsOpen={setIsOpen} />
             <ButtonSignOut />
           </div>

@@ -7,8 +7,6 @@ import { unstable_cache as nextCache, revalidateTag } from 'next/cache'
 import { getServerSession, Session } from 'next-auth'
 import { authOptions } from '@/lib/authOptions'
 import { isValidEmail } from '@/lib/helper'
-import { del } from '@vercel/blob'
-import { uploadMedia } from '@/lib/actions/media'
 
 const table = 'user'
 
@@ -69,7 +67,7 @@ export const getMe: User = cache(async () => {
 })
 
 // UPDATE ME
-export async function updateMe(prevState: User, formData: FormData) {
+export async function updateMe(_prevState: User, formData: FormData) {
   // Session
   const session = await getServerSession(authOptions)
   const id = session?.user?.id as string
@@ -172,6 +170,88 @@ export async function updateMe(prevState: User, formData: FormData) {
       success: false,
       payload: null,
       message: 'Failed to update profile. Please call admin.',
+    }
+  }
+}
+
+// UPDATE ME PASSWORD
+export async function updateMePassword(_prevState: User, formData: FormData) {
+  const session = (await getServerSession(authOptions)) as Session | null
+  if (!session || !session.user || !session.user.id) {
+    return {
+      success: false,
+      payload: null,
+      message: 'User not authenticated!',
+    }
+  }
+
+  const id = session.user.id
+
+  const new_password = formData.get('new_password')?.toString().trim()
+  const confirm_password = formData.get('confirm_password')?.toString().trim()
+
+  let errors: Record<string, string> = {}
+
+  const requiredFields = [
+    { key: 'new_password', label: 'New Password', value: new_password },
+    {
+      key: 'confirm_password',
+      label: 'Confirm Password',
+      value: confirm_password,
+    },
+  ]
+
+  // Check required fields
+  requiredFields.forEach(({ key, label, value }) => {
+    if (!value) {
+      errors[key] = `${label} is required.`
+    }
+  })
+
+  // Password match validation
+  if (new_password !== confirm_password) {
+    errors['confirm_password'] =
+      'New password and confirm password do not match.'
+  }
+
+  // Password strength validation
+  if (new_password && new_password.length < 8) {
+    errors['new_password'] = 'New password must be at least 8 characters long.'
+  }
+
+  // Return errors if any exist
+  if (Object.keys(errors).length > 0) {
+    return {
+      success: false,
+      errors,
+      input: { id },
+      message: null,
+    }
+  }
+
+  try {
+    // Hash the new password
+    const hashedPassword = await hash(new_password, 12)
+
+    // Update the user's password
+    const updatedUser = await prisma[table].update({
+      where: { id: +id },
+      data: { password: hashedPassword, updatedAt: new Date() },
+    })
+
+    revalidateTag('me')
+
+    return {
+      success: true,
+      payload: updatedUser,
+      message: 'Password updated successfully.',
+    }
+  } catch (error) {
+    console.error('[updateMePassword | Prisma | Error]:', error)
+    return {
+      success: false,
+      payload: null,
+      message: 'Failed to update password.',
     }
   }
 }
