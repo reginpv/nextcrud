@@ -16,6 +16,7 @@ export default function Login() {
             <div className="mt-7 flex flex-col gap-3 text-center">
               <Link href="/">Home</Link>
               <Link href="/signup">Create an account</Link>
+              <Link href="/forgot-password">Forgot password</Link>
             </div>
           </div>
           <div className="flex-1 bg-gray-300 dark:bg-gray-900 dark:text-white p-5 flex items-center justify-center">

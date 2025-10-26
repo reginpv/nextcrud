@@ -20,6 +20,9 @@ export default function Signup() {
               <p>
                 Already have an account? <Link href="/login">Login here</Link>
               </p>
+              <p>
+                <Link href="/forgot-password">Forgot password</Link>
+              </p>
             </div>
           </div>
           <div className="flex-1 bg-gray-300 p-5 flex items-center justify-center dark:bg-gray-900 dark:text-white">
