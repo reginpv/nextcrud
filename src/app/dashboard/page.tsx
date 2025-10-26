@@ -1,5 +1,4 @@
 import { Metadata } from 'next'
-import TemplateDefault from '@/templates/Default'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/authOptions'
 import { getUser } from '@/lib/actions/user'
@@ -17,7 +16,7 @@ export default async function Dashboard() {
   return (
     <section>
       <div className="">
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 container">
           <h1>User</h1>
 
           {session && (

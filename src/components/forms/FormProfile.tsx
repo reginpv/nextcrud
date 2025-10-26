@@ -4,7 +4,6 @@ import { useEffect, useState, useActionState, useRef } from 'react'
 import { updateMe } from '@/lib/actions/me'
 import { useSession } from 'next-auth/react'
 import { UserRoundPen } from 'lucide-react'
-import { Check } from 'lucide-react'
 
 export default function FormProfile({ m }: { m: User }) {
   //
