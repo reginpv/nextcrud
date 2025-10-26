@@ -1,9 +1,12 @@
 'use client'
 
 import { useEffect, useState, useActionState, useRef } from 'react'
+import Image from 'next/image'
 import { updateMe } from '@/lib/actions/me'
 import { useSession } from 'next-auth/react'
 import { UserRoundPen } from 'lucide-react'
+import { Trash } from 'lucide-react'
+import { deleteMedia, uploadMedia } from '@/lib/actions/media'
 
 export default function FormProfile({
   m,
@@ -18,6 +21,7 @@ export default function FormProfile({
   //
   const formRef = useRef<HTMLFormElement>(null)
 
+  // States
   const [pending, setPending] = useState(false)
   const [me, setMe] = useState<User>(m)
   const [state, handleSubmit, isPending] = useActionState(updateMe, {
@@ -36,6 +40,8 @@ export default function FormProfile({
     if (state.success) {
       setMe(state.payload)
       sessionUpdate(state.payload)
+    } else {
+      setPending(false)
     }
   }, [state])
 
@@ -56,6 +62,72 @@ export default function FormProfile({
     //
   }
 
+  // Upload profile photo
+  async function handleUploadProfilePhoto(imageFile: File) {
+    setPending(true)
+
+    try {
+      const upload = await uploadMedia(me.id, imageFile)
+
+      if (upload.success) {
+        setMe((prev: User) => ({
+          ...prev,
+          image: upload.payload.url,
+        }))
+        //
+        const update = await updateMe(
+          formRef.current,
+          (() => {
+            const fd = new FormData()
+            fd.append('name', me.name)
+            fd.append('email', me.email)
+            fd.append('image', upload.payload.url)
+            return fd
+          })()
+        )
+        sessionUpdate(update.payload)
+      }
+    } catch (error) {
+      console.log('error: ', error)
+    } finally {
+      setPending(false)
+    }
+  }
+
+  // Delete Profile Photo
+  async function handleDeleteProfilePhoto() {
+    setPending(true)
+
+    // Prepare form data
+    const formData = new FormData()
+    formData.append('name', me.name)
+    formData.append('email', me.email)
+    formData.append('image', me.image)
+    formData.append('removeProfile', 'true')
+
+    try {
+      //
+      const update = await Promise.all([
+        deleteMedia(formRef.current, formData),
+        updateMe(formRef.current, formData),
+      ])
+
+      if (update[0].success) {
+        setMe((prev: User) => ({
+          ...prev,
+          image: null,
+        }))
+        sessionUpdate(update[1].payload)
+      }
+
+      console.log('update: ', update)
+    } catch (error) {
+      console.log('error: ', error)
+    } finally {
+      setPending(false)
+    }
+  }
+
   return (
     <form
       ref={formRef}
@@ -66,17 +138,43 @@ export default function FormProfile({
     >
       <div className="flex flex-col gap-5">
         {/* Profile Picture Editor */}
-        <div className=" p-[15px] relative flex justify-center text-center">
-          <div className=" w-[100px] h-[100px] rounded-full bg-gray-200 overflow-hidden flex justify-center items-center mx-auto">
-            <label htmlFor="profile-image-input" className="cursor-pointer">
-              <UserRoundPen size={34} className=" text-gray-900" />
+
+        <div className="p-4 relative flex justify-center text-center">
+          <div className=" w-24 h-24 rounded-full bg-gray-200 overflow-hidden flex justify-center items-center mx-auto">
+            <label
+              data-loading={pending}
+              htmlFor="profile-image-input"
+              className="cursor-pointer h-full flex items-center w-full justify-center"
+            >
+              {me?.image ? (
+                <div className="relative group h-full w-full">
+                  <Image
+                    src={me.image}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                    width={200}
+                    height={200}
+                  />
+                  <div className="bg-black/30 z-20 overlay absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 flex justify-center items-center transition-opacity">
+                    <button
+                      type="button"
+                      onClick={handleDeleteProfilePhoto}
+                      className="button button--circle"
+                    >
+                      <Trash />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <UserRoundPen size={34} className=" text-gray-900" />
+              )}
             </label>
             <input
               id="profile-image-input"
               type="file"
               accept=".jpg, .jpeg, .png"
               className="hidden"
-              name="image"
+              name="_image"
               onChange={(e) => {
                 const file = e.target.files?.[0]
                 if (file) {
@@ -88,6 +186,7 @@ export default function FormProfile({
                     }))
                   }
                   reader.readAsDataURL(file)
+                  handleUploadProfilePhoto(file)
                 }
               }}
               disabled={isPending}

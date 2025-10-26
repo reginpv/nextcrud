@@ -48,4 +48,8 @@
       @apply outline-1 outline-dashed outline-red-300;
     }
   }
+
+  [data-loading='true'] {
+    @apply animate-pulse pointer-events-none opacity-70;
+  }
 }
