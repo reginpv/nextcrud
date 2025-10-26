@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { ButtonSignOut } from '@/components/ButtonsAuth'
 import Mode from '@/components/Mode'
@@ -48,9 +49,19 @@ export default function DrawerProfile() {
       </button>
       {isOpen && (
         <div className="animated absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-900 rounded z-10">
-          <div className="px-2 py-3 border-b border-gray-200 dark:border-gray-900 flex">
+          <div className="px-2 py-3 border-b border-gray-200 dark:border-gray-900 flex gap-2">
             <div className="min-w-8">
-              <CircleUserRound size={28} className="inline mr-2 mb-1" />
+              {session?.user?.image ? (
+                <Image
+                  src={session?.user?.image}
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full object-cover"
+                  width={32}
+                  height={32}
+                />
+              ) : (
+                <CircleUserRound size={28} className="inline mr-2 mb-1" />
+              )}
             </div>
             <div>
               <p>{session?.user?.name}</p>

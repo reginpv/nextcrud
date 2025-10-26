@@ -85,6 +85,7 @@ export default function FormProfile({
             return fd
           })()
         )
+        sessionUpdate(update.payload)
       }
     } catch (error) {
       console.log('error: ', error)
@@ -116,6 +117,7 @@ export default function FormProfile({
           ...prev,
           image: null,
         }))
+        sessionUpdate(update[1].payload)
       }
 
       console.log('update: ', update)
