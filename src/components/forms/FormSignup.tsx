@@ -1,23 +1,36 @@
-"use client"
+'use client'
 
-import { useActionState, useRef } from "react"
-import { createUser } from "@/lib/actions/user"
+import { useActionState, useEffect, useRef } from 'react'
+import { createUser } from '@/lib/actions/user'
+import { useRouter } from 'next/navigation'
 
+export default function FormSignup({ className }: { className?: string }) {
+  // Hooks
+  const { push: redirect } = useRouter()
 
-export default function FormSignup() {
-  
+  //
   const formRef = useRef<HTMLFormElement>(null)
+
+  // States
   const [state, handleSubmit, pending] = useActionState(createUser, {})
 
-  return (
-    <form 
-      ref={formRef}
-      action={handleSubmit} 
-      noValidate 
-      className="flex flex-col gap-5"
-    >
-      {state?.message && <p className={`message ${state.success ? `message--success` : `message--error`}`}>{state?.message}</p>}
+  useEffect(() => {
+    if (state?.success && formRef.current) {
+      formRef.current.reset()
+      // Use delay 1000 to show form message before redirect
+      setTimeout(() => {
+        redirect('/login')
+      }, 1000)
+    }
+  }, [state])
 
+  return (
+    <form
+      ref={formRef}
+      action={handleSubmit}
+      noValidate
+      className={`flex flex-col gap-5 ${className}`}
+    >
       <div className="form-control">
         <label>Full name</label>
         <input
@@ -39,7 +52,9 @@ export default function FormSignup() {
           placeholder="johnthomas@email.com"
           className={`input w-full`}
         />
-        {state?.errors?.email && <p className="error">{state?.errors?.email}</p>}
+        {state?.errors?.email && (
+          <p className="error">{state?.errors?.email}</p>
+        )}
       </div>
       <div className="form-control">
         <label>Password</label>
@@ -50,18 +65,24 @@ export default function FormSignup() {
           placeholder="********"
           className={`input w-full`}
         />
-        {state?.errors?.password && <p className="error">{state?.errors?.password}</p>}
+        {state?.errors?.password && (
+          <p className="error">{state?.errors?.password}</p>
+        )}
       </div>
       <div>
-        <button
-          type="submit"
-          className="w-full"
-          disabled={pending}
-        >
-          {pending ? "Please wait..." : "Signup"}
+        {state?.message && (
+          <div
+            className={`alert ${
+              state.success ? `alert--success` : `alert--danger`
+            }`}
+          >
+            {state?.message}
+          </div>
+        )}
+        <button type="submit" className="w-full my-3" disabled={pending}>
+          {pending ? 'Please wait...' : 'Signup'}
         </button>
       </div>
-      
     </form>
   )
 }

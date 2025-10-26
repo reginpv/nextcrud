@@ -1,7 +1,29 @@
 @layer utilities {
+  .alert {
+    @apply p-2 mb-3 border-l-4;
+    &.alert--info {
+      @apply border-blue-500 text-blue-500 bg-blue-100;
+    }
+    &.alert--success {
+      @apply border-green-500 text-green-500 bg-green-100;
+    }
+    &.alert--warning {
+      @apply border-yellow-500 text-yellow-500 bg-yellow-100;
+    }
+    &.alert--danger {
+      @apply border-red-500 text-red-500 bg-red-100;
+    }
+  }
 
   .animated {
     @apply transition-all ease-in-out duration-300;
+  }
+
+  .button {
+    @apply transition-all ease-in-out duration-300 hover:bg-gray-300 dark:hover:bg-gray-700 min-w-10 min-h-10 flex items-center justify-center py-2 px-3;
+    &.button--circle {
+      @apply rounded-full px-0 py-0 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700;
+    }
   }
 
   .container {
@@ -20,19 +42,6 @@
     }
   }
 
-  .message {
-    @apply p-2 text-sm;
-    &.message--error {
-      @apply bg-red-200 text-red-800;
-    }
-    &.message--success {
-      @apply bg-green-200 text-green-800;
-    }
-    &.message--info {
-      @apply bg-blue-200 text-blue-800;
-    }
-  }
-  
   .outlined {
     @apply outline-1 outline-dashed outline-red-300;
     * {

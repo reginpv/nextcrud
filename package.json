@@ -1,5 +1,5 @@
 {
-  "name": "next-crud-boilerplate",
+  "name": "nextcrud",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,20 +8,29 @@
     "start": "next start",
     "lint": "next lint",
     "db-generate": "dotenv -e .env.local -- npx prisma generate",
+    "db-migrate": "dotenv -e .env.local -- npx prisma migrate dev --name",
     "db-push": "dotenv -e .env.local -- npx prisma db push",
+    "db-reset": "dotenv -e .env.local -- npx prisma migrate reset",
+    "db-deploy": "dotenv -e .env.local -- npx prisma migrate deploy",
+    "db-seed": "dotenv -e .env.local -- npx prisma db seed",
     "studio": "dotenv -e .env.local -- npx prisma studio",
     "test": "jest"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
+    "lucide-react": "^0.546.0",
     "next": "15.2.3",
     "next-auth": "^4.24.11",
     "postcss": "^8.5.3",
     "prisma": "^6.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "tsx": "^4.20.6",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
