@@ -3,7 +3,7 @@
 import { useEffect, useState, useActionState, useRef } from 'react'
 import { updateMe } from '@/lib/actions/me'
 import { useSession } from 'next-auth/react'
-import { User } from 'lucide-react'
+import { UserRoundPen } from 'lucide-react'
 import { Check } from 'lucide-react'
 
 export default function FormProfile({ m }: { m: User }) {
@@ -28,7 +28,6 @@ export default function FormProfile({ m }: { m: User }) {
 
   //
   useEffect(() => {
-    console.log('FormProfile - State changed:', state)
     if (state.success) {
       setMe(state.payload)
       sessionUpdate(state.payload)
@@ -61,9 +60,9 @@ export default function FormProfile({ m }: { m: User }) {
       <div className="flex flex-col gap-5">
         {/* Profile Picture Editor */}
         <div className=" p-[15px] relative flex justify-center text-center">
-          <div className=" w-[100px] h-[100px] rounded-full bg-gray-200 overflow-hidden">
+          <div className=" w-[100px] h-[100px] rounded-full bg-gray-200 overflow-hidden flex justify-center items-center mx-auto">
             <label htmlFor="profile-image-input" className="cursor-pointer">
-              <User className="w-full h-full object-cover text-gray-900" />
+              <UserRoundPen size={34} className=" text-gray-900" />
             </label>
             <input
               id="profile-image-input"
@@ -90,7 +89,7 @@ export default function FormProfile({ m }: { m: User }) {
         </div>
 
         {/* Profile Information */}
-        <div className="profile-information-container mb-[40px] w-full flex flex-col gap-y-[16px]">
+        <div className="profile-information-container mb-10 w-full flex flex-col gap-y-4">
           {/* Name */}
           <div className="form-control">
             <label htmlFor="name">Name</label>
@@ -118,13 +117,12 @@ export default function FormProfile({ m }: { m: User }) {
               className={`!w-full ${state.errors?.name ? 'has-errors' : ''}`}
             />
           </div>
-          {state.message && (
+          {state?.message && (
             <div
               className={`alert ${
                 state.success ? 'alert--success' : 'alert--fail'
               }`}
             >
-              <Check className="inline mr-2" />
               {state.message}
             </div>
           )}

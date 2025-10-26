@@ -15,7 +15,7 @@ export default async function TemplateDashboard({
         <Aside />
         <main className="dark:bg-gray-800 dark:text-white flex flex-col">
           <HeaderDashboard />
-          <section className="flex-1 py-3 px-5">{children}</section>
+          <section className="flex-1">{children}</section>
           <FooterDashboard />
         </main>
       </section>
