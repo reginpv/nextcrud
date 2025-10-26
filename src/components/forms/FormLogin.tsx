@@ -5,9 +5,14 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 export default function FormLogin() {
+  // Refs
+  const formRef = useRef<HTMLFormElement>(null)
+
+  // Hooks
   const router = useRouter()
   const { push: redirect } = router
-  const formRef = useRef<HTMLFormElement>(null)
+
+  // State
   const [state, setState] = useState({
     message: '',
     success: false,
@@ -47,7 +52,7 @@ export default function FormLogin() {
         redirect: false,
       })
 
-      console.log('res: ', res)
+      // console.log('res: ', res)
 
       if (res?.ok === true) {
         setState({
@@ -59,7 +64,12 @@ export default function FormLogin() {
           },
         })
 
-        redirect('/')
+        // Wait 1 second before redirecting
+        setTimeout(() => {
+          redirect('/dashboard')
+        }, 1000)
+
+        //
       } else {
         setState({
           message: 'Failed to login',
@@ -95,8 +105,8 @@ export default function FormLogin() {
     >
       {state?.message && (
         <p
-          className={`message ${
-            state.success ? `message--success` : `message--error`
+          className={`alert ${
+            state.success ? `alert--success` : `alert--danger`
           }`}
         >
           {state?.message}
@@ -132,7 +142,11 @@ export default function FormLogin() {
       </div>
 
       <div>
-        <button type="submit" className="w-full" disabled={pending}>
+        <button
+          type="submit"
+          className="w-full disabled:animate-pulse disabled:opacity-50"
+          disabled={pending}
+        >
           {pending ? 'Please wait...' : 'Login'}
         </button>
       </div>
