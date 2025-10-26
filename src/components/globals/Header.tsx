@@ -21,7 +21,18 @@ export default async function Header() {
           </div>
 
           <div className="flex items-center gap-5">
-            <DrawerProfile />
+            {session ? (
+              <DrawerProfile />
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link href="/signup" className="button">
+                  Sign In
+                </Link>
+                <Link href="/login" className="button button--outline">
+                  Login
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
