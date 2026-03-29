@@ -7,7 +7,7 @@ interface Token extends JWT {
   role?: number
 }
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const token: Token | null = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,

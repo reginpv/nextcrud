@@ -6,14 +6,14 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "db:generate": "dotenv -e .env.local -- npx prisma generate",
     "db:migrate": "dotenv -e .env.local -- npx prisma migrate dev --name",
     "db:push": "dotenv -e .env.local -- npx prisma db push",
     "db:reset": "dotenv -e .env.local -- npx prisma migrate reset",
     "db:deploy": "dotenv -e .env.local -- npx prisma migrate deploy",
     "db:seed": "dotenv -e .env.local -- npx prisma db seed",
-    "dh:studio": "dotenv -e .env.local -- npx prisma studio",
+    "db:studio": "dotenv -e .env.local -- npx prisma studio",
     "test": "jest"
   },
   "prisma": {
@@ -25,13 +25,13 @@
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "lucide-react": "^0.546.0",
-    "next": "15.2.8",
+    "next": "16.2.1",
     "next-auth": "^4.24.11",
     "nodemailer": "^6.10.1",
     "postcss": "^8.5.3",
     "prisma": "^6.5.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "tsx": "^4.20.6",
     "zustand": "^5.0.3"
   },
@@ -39,10 +39,16 @@
     "@tailwindcss/postcss": "^4.0.14",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.17.24",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
     "dotenv-cli": "^8.0.0",
     "tailwindcss": "^4.0.14",
-    "typescript": "^5"
+    "typescript": "^5",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.1"
+  },
+  "overrides": {
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3"
   }
 }
