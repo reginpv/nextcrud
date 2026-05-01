@@ -3,12 +3,57 @@
 import prisma from '@/lib/prisma'
 import { hash } from 'bcrypt'
 import { cache } from 'react'
-import { unstable_cache as nextCache, revalidateTag } from 'next/cache'
+import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
 import { getServerSession, Session } from 'next-auth'
 import { authOptions } from '@/lib/authOptions'
 import { isValidEmail } from '@/lib/helper'
 
 const table = 'user'
+
+// 'use cache' is a Next.js 16 directive that caches an async function's return value
+// across requests (replaces unstable_cache). Key differences from unstable_cache:
+//   - No manual key arrays: the cache key is derived automatically from the function's
+//     location + its arguments, so passing `id` as a parameter is all that's needed.
+//   - cacheTag() registers tags for targeted invalidation via revalidateTag().
+//   - cacheLife() sets the cache lifetime profile ('max' = cache until tag invalidated).
+//   - Runtime APIs (cookies, headers) cannot be used inside 'use cache' — read them
+//     outside and pass as arguments; they become part of the key automatically.
+async function getMeData(id: string) {
+  'use cache'
+  cacheTag('me', table, 'cache')
+  cacheLife('max')
+
+  try {
+    const me = await prisma[table].findFirst({
+      where: {
+        id: +id,
+        deletedAt: null,
+      },
+    })
+
+    console.log(`---DB HIT: GET ME with ID: ${id} from database---`)
+
+    if (!me) {
+      return {
+        success: true,
+        payload: [],
+      }
+    }
+
+    return {
+      success: true,
+      payload: me,
+      message: 'My data fetched successfully!',
+    }
+  } catch (error) {
+    console.error('[getMe | Prisma | Error]:', error)
+    return {
+      success: false,
+      payload: null,
+      message: 'Failed to get my data!',
+    }
+  }
+}
 
 // GET ME
 export const getMe: User = cache(async () => {
@@ -22,48 +67,7 @@ export const getMe: User = cache(async () => {
     }
   }
 
-  const id = session?.user?.id
-
-  const data = await nextCache(
-    async () => {
-      try {
-        const me = await prisma[table].findFirst({
-          where: {
-            id: +id,
-            deletedAt: null,
-          },
-        })
-
-        console.log(`---DB HIT: GET ME with ID: ${id} from database---`)
-
-        if (!me) {
-          return {
-            success: true,
-            payload: [],
-          }
-        }
-
-        return {
-          success: true,
-          payload: me,
-          message: 'My data fetched successfully!',
-        }
-      } catch (error) {
-        console.error('[getMe | Prisma | Error]:', error)
-        return {
-          success: false,
-          payload: null,
-          message: 'Failed to get my data!',
-        }
-      }
-    },
-    ['me', id],
-    {
-      tags: ['me', table, 'cache'],
-    },
-  )()
-
-  return data
+  return getMeData(session.user.id)
 })
 
 // UPDATE ME
