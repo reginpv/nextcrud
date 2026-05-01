@@ -48,7 +48,7 @@ export default function FormResetPassword({
             Please check your email for the reset password link.
           </p>
         </div>
-        <Link href="/login" className="button button--default">
+        <Link href="/login" className="button button--secondary">
           Go back to Homepage
         </Link>
       </div>
@@ -150,7 +150,7 @@ export default function FormResetPassword({
       <div>
         <button
           type="submit"
-          className="w-full disabled:animate-pulse disabled:opacity-50"
+          className="button button--accent w-full justify-center disabled:animate-pulse disabled:opacity-50"
           disabled={isPending}
         >
           {isPending ? 'Please wait...' : 'Reset Password'}

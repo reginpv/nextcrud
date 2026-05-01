@@ -234,7 +234,7 @@ export default function FormProfile({
           )}
           {/* Save Button */}
           <button
-            className={`button button--default flex justify-center my-3 ${
+            className={`button button--accent flex justify-center my-3 ${
               isPending ? 'cursor-wait opacity-50' : 'cursor-pointer'
             }`}
             disabled={isPending}

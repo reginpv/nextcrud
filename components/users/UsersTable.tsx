@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { createUser, updateUser, softDeleteUser } from '@/lib/actions/user'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import {
   UserPlus,
   UserPen,
@@ -33,6 +34,7 @@ export default function UsersTable({
   total: number
 }) {
   const router = useRouter()
+  const { data: session } = useSession()
   const [isPending, startTransition] = useTransition()
   const [modal, setModal] = useState<'add' | 'edit' | null>(null)
   const [selectedUser, setSelectedUser] = useState<UserRow | null>(null)
@@ -102,7 +104,6 @@ export default function UsersTable({
       await softDeleteUser(String(user.id))
       setDeleteTarget(null)
       toast.success(`${user.name} deleted`)
-      // If this was the only row on a non-first page, step back
       if (users.length === 1 && page > 1) {
         goToPage(page - 1)
       } else {
@@ -115,9 +116,9 @@ export default function UsersTable({
     <>
       {/* Action bar */}
       <div className="flex justify-between items-center mb-4">
-        <p className="text-gray-500">{total} user(s)</p>
+        <p className="text-foreground/60">{total} user(s)</p>
         <button
-          className="button flex items-center gap-2 bg-accent text-white hover:bg-accent/80 px-4"
+          className="button button--accent flex items-center gap-2 px-4"
           onClick={openAdd}
         >
           <UserPlus size={24} />
@@ -139,43 +140,50 @@ export default function UsersTable({
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr
-                key={user.id}
-                className="border-b border-primary hover:bg-primary/60"
-              >
-                <td className="py-2 px-3 text-gray-400">{user.id}</td>
-                <td className="py-2 px-3">{user.name}</td>
-                <td className="py-2 px-3">{user.email}</td>
-                <td className="py-2 px-3">
-                  <RoleBadge role={user.role} />
-                </td>
-                <td className="py-2 px-3 text-gray-500">
-                  {new Date(user.createdAt).toLocaleDateString()}
-                </td>
-                <td className="py-2 px-3">
-                  <div className="flex gap-1 justify-end">
-                    <button
-                      className="button button--circle"
-                      onClick={() => openEdit(user)}
-                      title="Edit"
-                    >
-                      <UserPen size={24} />
-                    </button>
-                    <button
-                      className="button button--circle text-red-500 hover:bg-red-50"
-                      onClick={() => setDeleteTarget(user)}
-                      title="Delete"
-                    >
-                      <Trash2 size={24} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {users.map((user) => {
+              const isMe = user.email === session?.user?.email
+              return (
+                <tr
+                  key={user.id}
+                  className="border-b border-primary hover:bg-primary/60"
+                >
+                  <td className="py-2 px-3 text-foreground/40">{user.id}</td>
+                  <td className="py-2 px-3">{user.name}</td>
+                  <td className="py-2 px-3">{user.email}</td>
+                  <td className="py-2 px-3">
+                    <RoleBadge role={user.role} />
+                  </td>
+                  <td className="py-2 px-3 text-foreground/60">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="py-2 px-3">
+                    {isMe ? (
+                      <span className="text-sm text-foreground/50 italic">Your account</span>
+                    ) : (
+                      <div className="flex gap-1 justify-end">
+                        <button
+                          className="button button--circle"
+                          onClick={() => openEdit(user)}
+                          title="Edit"
+                        >
+                          <UserPen size={24} />
+                        </button>
+                        <button
+                          className="button button--circle"
+                          onClick={() => setDeleteTarget(user)}
+                          title="Delete"
+                        >
+                          <Trash2 size={24} />
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
             {users.length === 0 && (
               <tr>
-                <td colSpan={6} className="py-10 text-center text-gray-400">
+                <td colSpan={6} className="py-10 text-center text-foreground/40">
                   No users found.
                 </td>
               </tr>
@@ -187,7 +195,7 @@ export default function UsersTable({
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-4">
-          <p className="text-gray-500">
+          <p className="text-foreground/60">
             Page {page} of {totalPages}
           </p>
           <div className="flex gap-1">
@@ -202,7 +210,7 @@ export default function UsersTable({
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
               <button
                 key={p}
-                className={`button min-w-9 ${page === p ? 'bg-accent text-white hover:bg-accent/80' : ''}`}
+                className={`button min-w-9 ${page === p ? 'button--accent' : ''}`}
                 onClick={() => goToPage(p)}
               >
                 {p}
@@ -257,7 +265,7 @@ export default function UsersTable({
               <div className="alert alert--danger">{formMessage}</div>
             )}
             <button
-              className="button w-full justify-center"
+              className="button button--accent w-full justify-center"
               disabled={isPending}
             >
               {isPending ? 'Creating...' : 'Create User'}
@@ -311,7 +319,7 @@ export default function UsersTable({
               <div className="alert alert--danger">{formMessage}</div>
             )}
             <button
-              className="button w-full justify-center"
+              className="button button--accent w-full justify-center"
               disabled={isPending}
             >
               {isPending ? 'Saving...' : 'Save Changes'}
@@ -328,11 +336,11 @@ export default function UsersTable({
             ?
           </p>
           <div className="flex gap-2 justify-end">
-            <button className="button" onClick={() => setDeleteTarget(null)}>
+            <button className="button button--secondary" onClick={() => setDeleteTarget(null)}>
               Cancel
             </button>
             <button
-              className="button bg-red-500 text-white hover:bg-red-600"
+              className="button button--accent"
               onClick={() => handleDelete(deleteTarget)}
               disabled={isPending}
             >
@@ -347,9 +355,9 @@ export default function UsersTable({
 
 function RoleBadge({ role }: { role: string }) {
   const styles: Record<string, string> = {
-    SUPERADMIN: 'bg-purple-100 text-purple-700',
-    ADMIN: 'bg-blue-100 text-blue-700',
-    USER: 'bg-gray-100 text-gray-600',
+    SUPERADMIN: 'bg-accent text-white',
+    ADMIN: 'bg-tertiary text-foreground',
+    USER: 'bg-secondary text-foreground',
   }
   return (
     <span

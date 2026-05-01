@@ -4,7 +4,13 @@ import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ButtonSignOut } from '@/components/ButtonsAuth'
-import { User, UserPen, CircleUserRound, ShieldEllipsis, LayoutDashboard } from 'lucide-react'
+import {
+  User,
+  UserPen,
+  CircleUserRound,
+  ShieldEllipsis,
+  LayoutDashboard,
+} from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
 export default function DrawerProfile() {
@@ -13,7 +19,7 @@ export default function DrawerProfile() {
 
   // Hooks
   const { data: session } = useSession()
-  console.log('DrawerProfile - Session data:', session)
+  // console.log('DrawerProfile - Session data:', session)
 
   // State
   const [isOpen, setIsOpen] = useState(false)
@@ -68,7 +74,8 @@ export default function DrawerProfile() {
             </div>
           </div>
           <div className="flex flex-col justify-center py-3 px-1">
-            {(session?.user?.role === 'SUPERADMIN' || session?.user?.role === 'ADMIN') && (
+            {(session?.user?.role === 'SUPERADMIN' ||
+              session?.user?.role === 'ADMIN') && (
               <Link
                 href="/dashboard"
                 className="hover:bg-primary p-2 rounded animated"

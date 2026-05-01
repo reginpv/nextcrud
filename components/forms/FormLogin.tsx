@@ -144,7 +144,7 @@ export default function FormLogin({ className }: { className?: string }) {
       <div>
         <button
           type="submit"
-          className="w-full disabled:animate-pulse disabled:opacity-50"
+          className="button button--accent w-full justify-center disabled:animate-pulse disabled:opacity-50"
           disabled={pending}
         >
           {pending ? 'Please wait...' : 'Login'}

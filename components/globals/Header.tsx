@@ -25,10 +25,10 @@ export default async function Header() {
               <DrawerProfile />
             ) : (
               <div className="flex items-center gap-3">
-                <Link href="/signup" className="button">
+                <Link href="/signup" className="button button--accent">
                   Sign In
                 </Link>
-                <Link href="/login" className="button button--outline">
+                <Link href="/login" className="button button--secondary">
                   Login
                 </Link>
               </div>

@@ -11,7 +11,7 @@ export function ButtonSignIn({
   label?: string
 }) {
   return (
-    <button type="button" className={className} onClick={() => signIn()}>
+    <button type="button" className={`button ${className}`} onClick={() => signIn()}>
       {label}
     </button>
   )
@@ -23,7 +23,7 @@ export function ButtonSignOut({ className }: { className?: string }) {
       onClick={() => {
         signOut()
       }}
-      className={`hover:bg-gray-100 p-2 rounded animated w-full text-left ${className}`}
+      className={`button w-full justify-start ${className}`}
     >
       <LogOut className="inline mr-2 mb-1" />
       Logout

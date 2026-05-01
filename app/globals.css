@@ -8,7 +8,7 @@
   --primary: #f3f4f6;
   --secondary: #e5e7eb;
   --tertiary: #d1d5db;
-  --accent: #1f2937;
+  --accent: #000000;
 }
 
 @theme inline {
@@ -22,48 +22,55 @@
   --font-mono: var(--font-geist-mono);
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
-}
+@layer base {
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+  }
 
-body {
-  @apply min-h-dvh flex flex-col text-foreground bg-background;
-  main {
-    @apply flex-1;
+  body {
+    @apply min-h-dvh flex flex-col text-foreground bg-background;
+    main {
+      @apply flex-1;
+    }
   }
-}
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  @apply font-bold;
-}
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
 
-form {
-  input,
-  select,
-  textarea {
-    @apply p-2 ring-0 outline-none border border-tertiary;
+  form {
+    input,
+    select,
+    textarea {
+      @apply p-2 ring-0 outline-none border border-tertiary;
+    }
+    select,
+    input[type='date'] {
+      @apply appearance-none bg-white;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    textarea {
+      @apply field-sizing-content;
+    }
+    button {
+      @apply p-2 bg-tertiary cursor-pointer;
+    }
   }
-  select,
-  input[type='date'] {
-    @apply appearance-none bg-white;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-  }
-  textarea {
-    @apply field-sizing-content;
-  }
+
   button {
-    @apply p-2 bg-tertiary cursor-pointer;
+    @apply cursor-pointer;
   }
 }
 
-button {
-  @apply cursor-pointer;
+[data-sonner-toast] [data-icon] svg {
+  width: 30px;
+  height: 30px;
 }

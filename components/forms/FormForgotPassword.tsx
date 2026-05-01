@@ -65,7 +65,7 @@ export default function FormForgotPassword({
       <div>
         <button
           type="submit"
-          className="w-full disabled:animate-pulse disabled:opacity-50 my-3"
+          className="button button--accent w-full justify-center disabled:animate-pulse disabled:opacity-50 my-3"
           disabled={isPending}
         >
           {isPending ? 'Please wait...' : 'Submit'}

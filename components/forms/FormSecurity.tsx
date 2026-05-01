@@ -72,7 +72,7 @@ export default function FormSecurity({ className }: { className?: string }) {
 
           <button
             type="submit"
-            className={`button button--default flex justify-center ${
+            className={`button button--accent flex justify-center ${
               isPending ? 'cursor-wait opacity-50' : 'cursor-pointer'
             }`}
             disabled={isPending}

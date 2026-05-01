@@ -79,7 +79,7 @@ export default function FormSignup({ className }: { className?: string }) {
             {state?.message}
           </div>
         )}
-        <button type="submit" className="w-full my-3" disabled={pending}>
+        <button type="submit" className="button button--accent w-full justify-center my-3" disabled={pending}>
           {pending ? 'Please wait...' : 'Signup'}
         </button>
       </div>
